@@ -10,7 +10,9 @@ const ProductSchema = new mongoose.Schema(
         rating: Number,
         stock: Number,
         brand: String,
-        thumbnail: String
+        thumbnail: String,
+        status: String,
+        deleted: Boolean
     }
 )
 const products = mongoose.model('product',ProductSchema,'products')
