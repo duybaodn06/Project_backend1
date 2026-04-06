@@ -13,7 +13,8 @@ block main
             .inner-img 
               img(src=item.thumbnail)
             .inner-content
-              h3.inner-title #{item.title}
+              a(href=`/products/detail/${item.slug}`)
+                h3.inner-title #{item.title}
               .inner-price-new $#{item.price}
               .inner-price-old $#{item.newprice}
               .inner-discount -#{item.discountPercentage}%
