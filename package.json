@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "npx nodemon --inspect index.js",
     "stop": "taskkill /F /IM node.exe",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
