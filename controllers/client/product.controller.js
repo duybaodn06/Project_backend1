@@ -26,8 +26,15 @@ module.exports.detail = async (req,res) => {
     }
     const product = await products.findOne(find)
     console.log(product)
+    if (product == null) {
+        req.flash('error', 'Không tìm thấy sản phẩm')
+        const backUrl = req.get('Referer') 
+        res.redirect(backUrl);
+        return;
+    }
     res.render(`client/pages/products/detail.pug`, {
         title: "Chi tiết sản phẩm",
         product: product
     })
+
 }
