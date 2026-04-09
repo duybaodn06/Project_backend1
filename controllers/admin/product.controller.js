@@ -3,6 +3,8 @@ const filterStatusHelper = require('../../helpers/filterStatus.js')
 const searchHelper = require('../../helpers/search.js')
 const pagination  = require('../../helpers/pagination.js')
 const systemConfig = require('../../config/system.js')
+const cloudinary = require('cloudinary').v2
+const streamifier = require('streamifier')
 const PATH_ADMIN = systemConfig.prefixadmin
 // [GET] /admin/products
 module.exports.index = async (req,res) => {
@@ -120,12 +122,10 @@ module.exports.createPost = async (req,res) => {
     req.body.price = parseInt(req.body.price)
     req.body.discountPercentage = parseInt(req.body.discountPercentage)
     req.body.stock = parseInt(req.body.stock)
-    req.body.position =parseInt(req.body.position)
+    // req.body.position =parseInt(req.body.position)
     console.log(req.file)
 
-    if (req.file) req.body.thumbnail = `/uploads/${req.file.filename}`
-    
-    
+
     const product = new products(req.body)
     await product.save()
     res.redirect(`${PATH_ADMIN}/products`)
