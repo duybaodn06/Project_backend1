@@ -111,6 +111,7 @@ if (formChangeMulti){
 
 const deleteButtons = document.querySelectorAll('[button-delete]')
 if (deleteButtons.length > 0){
+
     const formDeleteItem = document.querySelector('#form-delete-item')
     const path = formDeleteItem.getAttribute('data-path')
     deleteButtons.forEach(btn => {
@@ -120,7 +121,6 @@ if (deleteButtons.length > 0){
             if (isConfirm){
                 const buttonId = btn.getAttribute('data-id')
                 formDeleteItem.action = `${path}/${buttonId}?_method=DELETE`
-                
                 formDeleteItem.submit()
             }
             
@@ -153,3 +153,32 @@ if(uploadImage) {
         }
     })
 }
+
+//sort
+const sort = document.querySelector('[sort]')
+if (sort) {
+    const buttonSortClear = sort.querySelector('[sort-clear]')
+    const sortSelect = sort.querySelector('[sort-select]')
+    let url = new URL(window.location.href)
+    sortSelect.addEventListener('change', (event) => {
+        const [key, val] = event.target.value.split('-')
+        url.searchParams.set('sortKey',key)
+        url.searchParams.set('sortValue',val)
+        window.location.href = url.href
+    }) 
+
+    buttonSortClear.addEventListener('click', (e) => {
+        url.searchParams.delete('sortKey')
+        url.searchParams.delete('sortValue')
+        window.location.href = url.href
+    })
+    const sortKey = url.searchParams.get('sortKey')
+    const sortValue = url.searchParams.get('sortValue')
+    if (sortKey && sortValue){
+        const stringSort = `${sortKey}-${sortValue}`
+        const option = sortSelect.querySelector(`option[value=${stringSort}]`)
+        console.log(option)
+        option.selected = true
+    }
+}
+//end sort

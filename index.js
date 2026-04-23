@@ -3,6 +3,7 @@ const express = require('express')
 const route = require('./routes/client/index.route.js')
 const routeAdmin = require('./routes/admin/index.route.js')
 const app = express()
+const path = require('path');
 const DatabaseConnect = require('./config/database.js')
 const systemConfig = require('./config/system.js')
 var methodOverride = require('method-override')
@@ -21,8 +22,10 @@ app.use(cookieParser('keyboard cat'));
 app.use(session({ cookie: { maxAge: 60000 }}));
 app.use(flash());
 
+//tinyMCE
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
-
+//method-override
 app.use(methodOverride('_method'))
 DatabaseConnect.connect();
 

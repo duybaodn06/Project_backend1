@@ -1,0 +1,64 @@
+extends ../../layouts/default.pug
+include ../../mixins/filterStatus.pug
+include ../../mixins/search.pug
+include ../../mixins/pagination.pug
+include ../../mixins/formChangeMulti.pug
+include ../../mixins/alert.pug
+include ../../mixins/sort.pug
+include ../../mixins/table-tree.pug
+
+block main 
+    +alertSuccess(4000)
+    +alertError(4000)
+    
+    h1 Trang nhóm quyền
+                            
+    .card.mb-3 
+        .card-header 
+            .card-body 
+                .row 
+                    .col-8  
+                    .col-4  
+                        a(
+                            href=`${prefixadmin}/roles/create`
+                            class='btn btn-outline-success'
+                        ) + Thêm mới
+    .card.mb-3 
+        .card-header Danh sách
+            .card-body 
+                table(
+                    class='table table-hover table-sm'
+                )
+                    thead(class='text-center')
+                        tr 
+                            th STT 
+                            th Tên quyền
+                            th Mô tả
+                            th Hoạt động
+                    tbody(class='text-center')
+                        if roles.length > 0
+                            each item,index in roles
+                                tr
+                                    td #{index + 1}
+                                    td #{item.title}
+                                    td #{item.description}
+                                    td
+                                        a(
+                                            href=`${prefixadmin}/roles/edit/${item._id}`
+                                            class="btn btn-warning btn-sm ml-1"
+                                            data-id=item.id
+                                            ) Sửa
+                                        button(
+                                            class="btn btn-danger btn-sm ml-1"
+                                            data-id=item.id
+                                            button-delete
+                                            ) Xóa
+    form(
+        action=''
+        method='POST'
+        id="form-delete-item"
+        data-path=`${prefixadmin}/roles/delete`
+    )
+    
+
+                        

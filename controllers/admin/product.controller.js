@@ -6,6 +6,8 @@ const systemConfig = require('../../config/system.js')
 const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
 const PATH_ADMIN = systemConfig.prefixadmin
+const productCategory = require('../../models/product-category.model.js')
+const createTree = require('../../helpers/createTree.js')
 // [GET] /admin/products
 module.exports.index = async (req,res) => {
     //import filter
@@ -29,9 +31,17 @@ module.exports.index = async (req,res) => {
     const countProducts = await products.countDocuments(find)
     const objectPagination = pagination(req.query,products,countProducts)
     
+    //sort
+    let sort = {}
+    if (req.query.sortKey && req.query.sortValue){
+        sort[req.query.sortKey] = req.query.sortValue
+    }
+    else{
+        sort.position = "asc"
+    }
 
     //create Products
-    const Products = await products.find(find).sort({position: "asc"}).limit(objectPagination.limitItems).skip(objectPagination.skip)
+    const Products = await products.find(find).sort(sort).limit(objectPagination.limitItems).skip(objectPagination.skip)
     
 
     // console.log(Products)
@@ -52,7 +62,7 @@ module.exports.changeStatus = async (req,res) => {
     await products.updateOne({ _id: id }, { status: status })
 
     req.flash("success", "Cập nhật thành công")
-    const backUrl = req.get('Referer') || `/${PATH_ADMIN}/products`; 
+    const backUrl = req.get('Referer') 
 
     
     res.redirect(backUrl);
@@ -90,7 +100,7 @@ module.exports.changeMulti = async (req,res) => {
     }
     
     
-    const backUrl = req.get('Referer') || `/${PATH_ADMIN}/products`; 
+    const backUrl = req.get('Referer') 
     res.redirect(backUrl);
 }
 
@@ -104,7 +114,7 @@ module.exports.deleteItem = async (req,res) => {
         deletedAt: new Date()
     })
     req.flash("success", `Xóa sản phẩm thành công`)
-    const backUrl = req.get('Referer') || `/${PATH_ADMIN}/products`; 
+    const backUrl = req.get('Referer')
     res.redirect(backUrl);
 }
 
@@ -123,7 +133,7 @@ module.exports.createPost = async (req,res) => {
     req.body.discountPercentage = parseInt(req.body.discountPercentage)
     req.body.stock = parseInt(req.body.stock)
     // req.body.position =parseInt(req.body.position)
-    console.log(req.file)
+
 
 
     const product = new products(req.body)
@@ -131,7 +141,7 @@ module.exports.createPost = async (req,res) => {
     res.redirect(`${PATH_ADMIN}/products`)
 }
 
-// [GET] /admin/products/create/:id
+// [GET] /admin/products/edit/:id
 module.exports.edit = async (req,res) => {
     try{
         const find = {
@@ -139,11 +149,15 @@ module.exports.edit = async (req,res) => {
             _id: req.params.id
         }
         const product = await products.findOne(find)
-
+        const records = createTree(await productCategory.find({
+            deleted:false,
+            status: "active"
+        }))
 
         res.render('admin/pages/product/edit.pug', {
             title: "Trang chỉnh sửa sản phẩm",
-            product: product
+            product: product,
+            records: records
         })
     }catch(error){  
         req.flash('error', 'Không tìm thấy sản phẩm')
@@ -159,7 +173,7 @@ module.exports.editPatch = async (req,res) => {
     req.body.discountPercentage = parseInt(req.body.discountPercentage)
     req.body.stock = parseInt(req.body.stock)
     req.body.position =parseInt(req.body.position)
-
+    console.log(req.body)
     if (req.file) req.body.thumbnail = `/uploads/${req.file.filename}`
     
     try {
@@ -169,7 +183,6 @@ module.exports.editPatch = async (req,res) => {
         req.flash('error', 'Cập nhật thất bại')
     }
     
-    // res.redirect(`${PATH_ADMIN}/products`)
     const backUrl = req.get('Referer') 
     res.redirect(backUrl);
 }
@@ -182,11 +195,15 @@ module.exports.detail = async (req,res) => {
             _id: req.params.id
         }
         const product = await products.findOne(find)
-
-
+        const record = await productCategory.findOne({
+            deleted: false,
+            _id: product.category
+        })
+        console.log(record)
         res.render('admin/pages/product/detail.pug', {
             title: "Trang chi tiết sản phẩm",
-            product: product
+            product: product,
+            record: record 
         })
     }catch(error){  
         req.flash('error', 'Không tìm thấy sản phẩm')

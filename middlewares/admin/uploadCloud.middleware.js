@@ -10,6 +10,10 @@ cloudinary.config({
 // End Cloudinary
 
 module.exports.upload = (req, res, next) => {
+    if (!req.file) {
+        next()
+        return
+    }
     let streamUpload = (req) => {
         return new Promise((resolve, reject) => {
             let stream = cloudinary.uploader.upload_stream(

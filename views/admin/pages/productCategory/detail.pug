@@ -1,0 +1,42 @@
+extends ../../layouts/default.pug
+
+block main
+  if (category.title)
+    h1(class="mb-4") #{category.title}
+
+  if (category.parent_id)
+    div(class="mb-4")
+      b Danh mục: 
+      | #{record.title}
+
+  if (category.description)
+    div(class="mb-4") 
+      b Mô tả: 
+      | !{category.description}
+
+  if (category.thumbnail)
+    div(class="mb-4")
+      img(
+        src=category.thumbnail
+        style="width: 100px"
+      )
+
+  if (category.status)
+    div(class="mb-4")
+      b Trạng thái: 
+      if (category.status === "active")
+        span(class="badge badge-success") Hoạt động
+      else
+        span(class="badge badge-danger") Dừng hoạt động
+
+  if (category.position)
+    div(class="mb-4")
+      b Vị trí: 
+      | #{category.position}
+
+  a(
+    href=`${prefixadmin}/products-category/edit/${category.id}`
+    class='btn btn-info'
+  ) Chỉnh sửa
+  
+  script(src="/admin/js/product.js")
