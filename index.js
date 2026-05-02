@@ -6,9 +6,13 @@ const app = express()
 const path = require('path');
 const DatabaseConnect = require('./config/database.js')
 const systemConfig = require('./config/system.js')
-var methodOverride = require('method-override')
+const methodOverride = require('method-override')
 const bodyParser = require('body-parser')
 const flash = require('express-flash')
+const moment = require('moment')
+
+// moment
+app.locals.moment = moment 
 
 // npm install cookie-parser express-session
 const cookieParser = require('cookie-parser');

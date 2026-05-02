@@ -120,8 +120,6 @@ module.exports.editPatch = async (req,res) => {
         req.flash("error", "Cập nhật sản phẩm thất bại")
         res.redirect(`${systemConfig.prefixadmin}/products-category`)
     }
-    
-    
 }
 
 // [DELETE] admin/products-category/delete/:id

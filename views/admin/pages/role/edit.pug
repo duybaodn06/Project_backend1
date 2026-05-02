@@ -5,34 +5,34 @@ include ../../mixins/select-tree.pug
 block main  
     +alertSuccess(4000)
     +alertError(4000)
-    
-    h1(class='mb-4') Cập nhật danh mục sản phẩm
+    if (role.permissions.includes('roles_edit'))   
+        h1(class='mb-4') Cập nhật quyền
 
-    form(
-        action=`${prefixadmin}/roles/edit/${data.id}?_method=PATCH`
-        method="POST"
-    )
-        div(class="form-group")
-            label(for="title") Tiêu đề
-            input(
-                    type="text"
-                    class="form-control"
-                    id="title"
-                    name="title"
-                    value=data.title 
-                    required
-                )
-        div(class="form-group")
-            label(for="desc") Mô tả
-            textarea(
-                    class="form-control"
-                    id="desc"
-                    name="description"
-                    rows="1"
-                ) #{data.description}
-        div(class='form-group')
-            button(
-                type='submit'
-                class='btn btn-primary'
-            ) Cập nhật
-        
+        form(
+            action=`${prefixadmin}/roles/edit/${data.id}?_method=PATCH`
+            method="POST"
+        )
+            div(class="form-group")
+                label(for="title") Tiêu đề
+                input(
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        name="title"
+                        value=data.title 
+                        required
+                    )
+            div(class="form-group")
+                label(for="desc") Mô tả
+                textarea(
+                        class="form-control"
+                        id="desc"
+                        name="description"
+                        rows="1"
+                    ) #{data.description}
+            div(class='form-group')
+                button(
+                    type='submit'
+                    class='btn btn-primary'
+                ) Cập nhật
+            

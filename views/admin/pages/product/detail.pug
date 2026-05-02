@@ -34,7 +34,8 @@ block main
   if (product.description)
     div(class="mb-4") !{product.description}
 
-  a(
-    href=`${prefixadmin}/products/edit/${product.id}`
-    class='btn btn-info'
-  ) Chỉnh sửa
+  if (role.permissions.includes('products_edit'))
+    a(
+      href=`${prefixadmin}/products/edit/${product.id}`
+      class='btn btn-info'
+    ) Chỉnh sửa

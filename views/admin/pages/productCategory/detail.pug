@@ -33,10 +33,10 @@ block main
     div(class="mb-4")
       b Vị trí: 
       | #{category.position}
-
-  a(
-    href=`${prefixadmin}/products-category/edit/${category.id}`
-    class='btn btn-info'
-  ) Chỉnh sửa
+  if (role.permissions.includes('products-category_edit'))
+    a(
+      href=`${prefixadmin}/products-category/edit/${category.id}`
+      class='btn btn-info'
+    ) Chỉnh sửa
   
   script(src="/admin/js/product.js")

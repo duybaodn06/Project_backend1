@@ -3,32 +3,33 @@ include ../../mixins/alert.pug
 block main  
     +alertSuccess(4000)
     +alertError(4000)
-    h1(class='mb-4') Cập nhật danh mục sản phẩm
+    if (role.permissions.includes('roles_create'))   
+        h1(class='mb-4') Cập nhật danh mục sản phẩm
 
-    form(
-        action=`${prefixadmin}/roles/create`
-        method="POST"
-    )
-        div(class="form-group")
-            label(for="title") Tiêu đề
-            input(
-                    type="text"
-                    class="form-control"
-                    id="title"
-                    name="title"
-                    required
-                )
-        div(class="form-group")
-            label(for="desc") Mô tả
-            textarea(
-                    class="form-control"
-                    id="desc"
-                    name="description"
-                    rows="1"
-                )
-        div(class='form-group')
-            button(
-                type='submit'
-                class='btn btn-primary'
-            ) Tạo mới
-        
+        form(
+            action=`${prefixadmin}/roles/create`
+            method="POST"
+        )
+            div(class="form-group")
+                label(for="title") Tiêu đề
+                input(
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        name="title"
+                        required
+                    )
+            div(class="form-group")
+                label(for="desc") Mô tả
+                textarea(
+                        class="form-control"
+                        id="desc"
+                        name="description"
+                        rows="1"
+                    )
+            div(class='form-group')
+                button(
+                    type='submit'
+                    class='btn btn-primary'
+                ) Tạo mới
+            

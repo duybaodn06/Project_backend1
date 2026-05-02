@@ -7,6 +7,7 @@ const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
 const PATH_ADMIN = systemConfig.prefixadmin
 const productCategory = require('../../models/product-category.model.js')
+const accounts = require('../../models/accounts.model.js')
 const createTree = require('../../helpers/createTree.js')
 // [GET] /admin/products
 module.exports.index = async (req,res) => {
@@ -17,7 +18,7 @@ module.exports.index = async (req,res) => {
     let find = {
         deleted: false,
     }
-
+    
 
     if (req.query.status) {
         find.status = req.query.status
@@ -43,6 +44,14 @@ module.exports.index = async (req,res) => {
     //create Products
     const Products = await products.find(find).sort(sort).limit(objectPagination.limitItems).skip(objectPagination.skip)
     
+    for (const product of Products){
+        const user = await accounts.findOne({
+            _id: product.createdBy.account_id
+        })
+        if (user){
+            product.fullName = user.fullName
+        }
+    }
 
     // console.log(Products)
     res.render('admin/pages/product/index.pug',{
@@ -111,7 +120,10 @@ module.exports.deleteItem = async (req,res) => {
 
     await products.updateOne({ _id: id }, { 
         deleted: true,
-        deletedAt: new Date()
+        deletedBy: {
+            account_id: res.locals.user.id,
+            deletedAt: new Date()
+        }
     })
     req.flash("success", `Xóa sản phẩm thành công`)
     const backUrl = req.get('Referer')
@@ -119,21 +131,31 @@ module.exports.deleteItem = async (req,res) => {
 }
 
 // [GET] /admin/products/create
-module.exports.create = (req,res) => {
- 
+module.exports.create = async (req,res) => {
+    //find
+    let find = {
+        deleted:false,
+    }
+
+    const records = await productCategory.find(find)
+    const newRecords = createTree(records)
+
     res.render('admin/pages/product/create.pug', {
-        title: "Trang tạo mới sản phẩm"
+        title: "Trang tạo mới sản phẩm",
+        records: newRecords
+
     })
 }
 
 // [POST] /admin/products/create
 module.exports.createPost = async (req,res) => {
-
     req.body.price = parseInt(req.body.price)
     req.body.discountPercentage = parseInt(req.body.discountPercentage)
     req.body.stock = parseInt(req.body.stock)
-    // req.body.position =parseInt(req.body.position)
 
+    req.body.createdBy = {
+        account_id: res.locals.user.id
+    }
 
 
     const product = new products(req.body)
@@ -173,9 +195,9 @@ module.exports.editPatch = async (req,res) => {
     req.body.discountPercentage = parseInt(req.body.discountPercentage)
     req.body.stock = parseInt(req.body.stock)
     req.body.position =parseInt(req.body.position)
-    console.log(req.body)
-    if (req.file) req.body.thumbnail = `/uploads/${req.file.filename}`
     
+    // if (req.file) req.body.thumbnail = `/uploads/${req.file.fieldname}`
+
     try {
         await products.updateOne({ _id: req.params.id} , req.body)
         req.flash('success', 'Cập nhật thành công')

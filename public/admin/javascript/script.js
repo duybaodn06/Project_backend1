@@ -46,6 +46,7 @@ if (buttonPagination) {
     
 }
 
+
 const checkboxMulti = document.querySelector('[checkbox-multi]')
 if (checkboxMulti){
     const inputCheckAll = checkboxMulti.querySelector('input[name="checkall"]')
